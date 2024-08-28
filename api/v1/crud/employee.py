@@ -3,18 +3,56 @@ from ..models import (
     EmployeeCreate,
     EmployeeUpdate,
     EmployeeDatabase,
+    DepartmentDatabase,
+    PositionDatabase,
 )
 from fastapi import HTTPException, status
 
 
 def create_employee(employee: EmployeeCreate, db: Session):
     """Creates an employee"""
-    employee = employee.model_dump()
-    new_employee = EmployeeDatabase(**employee)
+    employee_dict = (
+        employee.model_dump()
+    )  # Use dict() to convert Pydantic model to dictionary
 
-    db.add(new_employee)
-    db.commit()
-    db.refresh(new_employee)
+    # Check if department_id is provided
+    if employee_dict.get("department_id"):
+        department = db.exec(
+            select(DepartmentDatabase).where(
+                DepartmentDatabase.id == employee_dict.get("department_id")
+            )
+        ).first()
+        if not department:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Department not found. Please enter a valid department id.",
+            )
+
+    # Check if position_id is provided
+    if employee_dict.get("position_id"):
+        position = db.exec(
+            select(PositionDatabase).where(
+                PositionDatabase.id == employee_dict.get("position_id")
+            )
+        ).first()
+        if not position:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Position not found. Please enter a valid position id.",
+            )
+
+    new_employee = EmployeeDatabase(**employee_dict)
+
+    try:
+        db.add(new_employee)
+        db.commit()
+        db.refresh(new_employee)
+    except Exception as e:
+        db.rollback()  # Rollback in case of error
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An error occurred while creating the employee: {str(e)}",
+        )
 
     return new_employee
 
