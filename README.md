@@ -1,5 +1,6 @@
 # RevPloy API
 
+![RevPloy](image.png)
 Welcome to the RevPloy! This API provides resources for managing HR activities in a company.
 
 ## Table of Contents
