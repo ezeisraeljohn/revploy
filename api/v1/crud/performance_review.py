@@ -4,6 +4,7 @@ from ..models import (
     PerformanceReview,
     PerformanceReviewUpdate,
     PerformanceReviewDatabase,
+    EmployeeDatabase,
 )
 from fastapi import HTTPException, status
 
@@ -13,6 +14,17 @@ def create_performance_review(
 ) -> PerformanceReview:
     """Creates a performance_review"""
     performance_review = performance_review.model_dump()
+    if performance_review.get("employee_id"):
+        employee = db.exec(
+            select(EmployeeDatabase).where(
+                EmployeeDatabase.id == performance_review.get("employee_id")
+            )
+        ).first()
+        if not employee:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Employee not found. Please enter a valid employee id.",
+            )
     new_performance_review = PerformanceReviewDatabase(**performance_review)
 
     db.add(new_performance_review)
@@ -37,7 +49,7 @@ def get_performance_review(id: int, db: Session):
     if not result:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            details="performance_review not Found",
+            detail="performance_review not Found",
         )
     return result
 
