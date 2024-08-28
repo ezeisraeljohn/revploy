@@ -3,7 +3,6 @@ import os
 import pymysql
 from dotenv import load_dotenv
 
-load_dotenv()
 pymysql.install_as_MySQLdb()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
