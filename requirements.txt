@@ -3,7 +3,6 @@ annotated-types==0.7.0
 anyio==4.4.0
 async-timeout==4.0.3
 asyncpg==0.29.0
-dotenv==0.0.5
 exceptiongroup==1.2.2
 fastapi==0.112.2
 fastapi-pagination==0.10.0
