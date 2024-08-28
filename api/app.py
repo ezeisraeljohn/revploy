@@ -13,7 +13,7 @@ from api.v1.routers import (
 app = FastAPI(
     docs_url="/api/v1/docs",
     redoc_url="/api/v1/redoc",
-    title="Reploy API",
+    title="Revploy API",
 )
 
 SQLModel.metadata.create_all(bind=engine)
