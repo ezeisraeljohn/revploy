@@ -34,7 +34,7 @@ def create_performance_review(
     return new_performance_review
 
 
-def get_all_performance_reviews(db: Session, limit: int, offset: int):
+def get_all_performance_reviews(db: Session):
     """Returns all performance_reviews"""
     statement = select(PerformanceReviewDatabase)
     return db.exec(statement).all()
