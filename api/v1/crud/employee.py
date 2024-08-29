@@ -7,6 +7,7 @@ from ..models import (
     PositionDatabase,
 )
 from fastapi import HTTPException, status
+from datetime import datetime
 
 
 def create_employee(employee: EmployeeCreate, db: Session):
@@ -85,6 +86,7 @@ def update_employee(id: int, employee: EmployeeUpdate, db: Session):
     employee = employee.model_dump()
     for key, value in employee.items():
         setattr(result, key, value)
+    result.date_updated = datetime.now()
     db.commit()
 
     return employee
