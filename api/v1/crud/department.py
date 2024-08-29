@@ -5,6 +5,7 @@ from ..models import (
     DepartmentDatabase,
 )
 from fastapi import HTTPException, status
+from datetime import datetime
 
 
 def create_department(department: DepartmentCreate, db: Session):
@@ -47,7 +48,9 @@ def update_department(id: int, department: DepartmentUpdate, db: Session):
     department = department.model_dump()
     for key, value in department.items():
         setattr(result, key, value)
+        result.date_updated = datetime.now()
     db.commit()
+    db.refresh(result)
 
     return department
 
