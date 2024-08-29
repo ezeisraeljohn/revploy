@@ -69,12 +69,26 @@ def update_performance_review(
             detail="performance_review not found",
         )
     performance_review = performance_review.model_dump()
+    if (
+        performance_review.get("employee_id")
+        or performance_review.get("employee_id") == 0
+    ):
+        employee = db.exec(
+            select(EmployeeDatabase).where(
+                EmployeeDatabase.id == performance_review.get("employee_id")
+            )
+        ).first()
+        if not employee:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Employee not found. Please enter a valid employee id.",
+            )
     for key, value in performance_review.items():
         setattr(result, key, value)
     result.date_updated = datetime.now()
     db.commit()
-
-    return performance_review
+    db.refresh(result)
+    return result
 
 
 def delete_performance_review(id: int, db: Session):
