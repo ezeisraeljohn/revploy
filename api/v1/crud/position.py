@@ -6,6 +6,7 @@ from ..models import (
     PositionDatabase,
 )
 from fastapi import HTTPException, status
+from datetime import datetime
 
 
 def create_position(position: PositionCreate, db: Session):
@@ -48,6 +49,7 @@ def update_position(id: int, position: PositionUpdate, db: Session):
     position = position.model_dump()
     for key, value in position.items():
         setattr(result, key, value)
+    result.date_updated = datetime.now()
     db.commit()
 
     return position
