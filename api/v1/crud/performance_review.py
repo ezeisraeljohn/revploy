@@ -7,6 +7,7 @@ from ..models import (
     EmployeeDatabase,
 )
 from fastapi import HTTPException, status
+from datetime import datetime
 
 
 def create_performance_review(
@@ -70,6 +71,7 @@ def update_performance_review(
     performance_review = performance_review.model_dump()
     for key, value in performance_review.items():
         setattr(result, key, value)
+    result.date_updated = datetime.now()
     db.commit()
 
     return performance_review
