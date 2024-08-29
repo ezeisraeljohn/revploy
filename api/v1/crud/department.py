@@ -52,7 +52,7 @@ def update_department(id: int, department: DepartmentUpdate, db: Session):
     db.commit()
     db.refresh(result)
 
-    return department
+    return result
 
 
 def delete_department(id: int, db: Session):
